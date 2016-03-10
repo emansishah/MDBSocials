@@ -9,6 +9,8 @@
 import UIKit
 
 class SocialsFeedViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource {
+    
+    private let reuseIdentifier = "social"
 
     @IBOutlet var socialsFeed: UICollectionView!
     override func viewDidLoad() {

@@ -9,6 +9,8 @@
 import UIKit
 
 class SocialDetailsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+    
+    private let reuseIdentifier = "membersCell"
 
     @IBOutlet var membersGoing: UITableView!
     override func viewDidLoad() {
