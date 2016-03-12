@@ -7,41 +7,15 @@
 //
 
 import UIKit
+import Parse
 
 class SignUpViewController: UIViewController {
 
-    @IBOutlet var emailError: UILabel!
-    @IBOutlet var passwordError: UILabel!
     @IBOutlet var signUpFullName: UITextField!
     @IBOutlet var email: UITextField!
     @IBOutlet var signUpPassword: UITextField!
     @IBOutlet var confirmPassword: UITextField!
-    @IBAction func signUp(sender: AnyObject) {
-        
-    }
-    /*
-    func myMethod() {
-        var user = PFUser()
-        user.username = "myUsername"
-        user.password = "myPassword"
-        user.email = "email@example.com"
-        // other fields can be set just like with PFObject
-        user["phone"] = "415-392-0202"
-        
-        user.signUpInBackgroundWithBlock {
-            (succeeded: Bool, error: NSError?) -> Void in
-            if let error = error {
-                let errorString = error.userInfo?["error"] as? NSString
-                // Show the errorString somewhere and let the user try again.
-            } else {
-                // Hooray! Let them use the app now.
-            }
-        }
-    }
-    */
 
-
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -51,6 +25,54 @@ class SignUpViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func displayAlert(title: String, displayError: String) {
+        let alert = UIAlertController(title: title, message: displayError, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.Default, handler: {action in self.dismissViewControllerAnimated(true, completion: nil)}))
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func backPressed(sender: UIButton) {
+        self.performSegueWithIdentifier("backFromSignUp", sender: self)
+    }
+    
+    @IBAction func signUp(sender: AnyObject) {
+        var displayError = "Please enter a "
+        if signUpFullName.text == "" {
+            displayError += "username"
+        } else if signUpPassword.text == "" {
+            displayError += "password"
+        } else if email.text == "" {
+            displayError += "n email"
+        } else if confirmPassword.text == "" {
+            displayError = "Please confirm password"
+        }
+        
+        if displayError != "Please enter a " {
+            displayAlert("Incomplete Form", displayError: displayError)
+        } else {
+            let user = PFUser()
+            user.username = signUpFullName.text
+            user.password = signUpPassword.text
+            user.email = email.text
+            
+            user.signUpInBackgroundWithBlock { (succeeded, signUpError) -> Void in
+                
+                if signUpError == nil {
+                    self.performSegueWithIdentifier("signUpToMain", sender: self)
+                } else {
+                    if let error = signUpError!.userInfo["error"] as? NSString {
+                        displayError = error as String
+                    } else {
+                        displayError = "Please try again later"
+                    }
+                    self.displayAlert("Could not Sign Up", displayError: displayError)
+                }
+            }
+        }
     }
     
 

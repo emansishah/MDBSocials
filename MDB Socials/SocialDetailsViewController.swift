@@ -7,11 +7,35 @@
 //
 
 import UIKit
+import Parse
 
-class SocialDetailsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
+class SocialDetailsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     private let reuseIdentifier = "membersCell"
+    
 
+    @IBOutlet var going: UIButton!
+    @IBOutlet var notGoing: UIButton!
+    
+    @IBOutlet var eventLocation: UILabel!
+    @IBOutlet var eventDate: UILabel!
+    @IBOutlet var eventTitle: UILabel!
+    var details = Int()
+    var locations = []
+    var names = []
+    let user = PFUser.currentUser()
+    //var social = PFObject()
+    
+    @IBAction func userGoing(sender: AnyObject) {
+        going.highlighted = false
+        notGoing.highlighted = true
+        goingUsers()
+    }
+    @IBAction func userNotGoing(sender: AnyObject) {
+        notGoing.highlighted = false
+        going.highlighted = true
+    }
+    
     @IBOutlet var membersGoing: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,6 +43,11 @@ class SocialDetailsViewController: UIViewController, UITableViewDelegate, UITabl
         // Do any additional setup after loading the view.
         membersGoing.delegate = self
         membersGoing.dataSource = self
+        going.highlighted = true
+        notGoing.highlighted = true
+        eventLocation.text = locations[details] as! String
+        eventTitle.text = names[details] as! String
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -31,17 +60,52 @@ class SocialDetailsViewController: UIViewController, UITableViewDelegate, UITabl
     }
     
     func tableView(tableView: UITableView, numberOfSectionsInRow section: Int) -> Int {
-        return 0
+        return getNumUsers()
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = membersGoing.dequeueReusableCellWithIdentifier("membersCell", forIndexPath: indexPath) as! MembersTableViewCell
+        //cell.membersNames.text = getNames()[indexPath.row] as! String
         return cell
     }
-
-
-
     
+
+    @IBAction func backPressed(sender: UIButton) {
+        self.performSegueWithIdentifier("backFromDetails", sender: self)
+    }
+    
+    func goingUsers() -> Void {
+        //self.social["goingUserObjectIds"] = self.user
+        //print(self.user!.username)
+    }
+    
+    func getNumUsers() -> Int {
+        var arr = []
+        var query = PFQuery(className:"Socials")
+        do {
+            arr = try query.findObjects()
+        } catch {
+            arr = []
+        }
+        return arr.count
+    }
+    
+   /** func getNames() -> NSArray {
+        var arr = []
+        var namesArray: [String] = []
+        var query = PFQuery(className:"Socials")
+        do {
+            arr = try query.findObjects()
+            for object in arr {
+                namesArray.append(object["goingUserObjectIds"] as! String)
+            }
+        } catch {
+            arr = []
+        }
+        return namesArray
+    }*/
+
+
 
     /*
     // MARK: - Navigation

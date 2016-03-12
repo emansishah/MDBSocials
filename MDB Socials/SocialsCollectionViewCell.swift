@@ -9,13 +9,11 @@
 import UIKit
 
 class SocialsCollectionViewCell: UICollectionViewCell {
-    @IBOutlet var eventImage: UIImageView!
-    @IBOutlet var eventDate: UILabel!
     @IBOutlet var eventTitle: UILabel!
-    @IBOutlet var eventDate2: UILabel!
     @IBOutlet var eventTime: UILabel!
     @IBOutlet var eventLocation: UILabel!
     @IBOutlet var numAtendees: UILabel!
+
     
 
     
